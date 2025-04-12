@@ -65,7 +65,13 @@
               </div>
               <div class="user-detail" style="margin-left: 0px">
                 <strong>Притеснения</strong>
-                <p>{{ concerns === null ? "Няма" : concerns }}</p>
+                <p>
+                  {{
+                    concerns === null || concerns.length === 0
+                      ? "Няма"
+                      : concerns
+                  }}
+                </p>
               </div>
             </div>
             <div class="user-detail-row">
@@ -174,17 +180,57 @@
         </div>
 
         <div class="button-group">
-          <a href="reminder.html" class="button reminder-button">Напомняне</a>
+          <button class="button reminder-button" @click="setReminders">Напомняне</button>
           <div class="reminder-container">
             <p>
               Тук може да получавате имейл като известие, за да не пропускате
               нито една beauty процедура.
             </p>
+            <div class="reminder-buttons">
+              <div class="reminder">
+                <button
+                  class="routine-button"
+                  @click="selectDayReminder"
+                  :class="{ selected: isMorningReminderSelected }"
+                >
+                  Сутрин
+                </button>
+                <input
+                  v-if="isMorningReminderSelected"
+                  v-model="morningReminder"
+                  type="time"
+                  value="08:00"
+                  min="05:00"
+                  max="11:00"
+                  step="900"
+                  required
+                />
+              </div>
+              <div class="reminder">
+                <button
+                  class="routine-button"
+                  @click="selectNightReminder"
+                  :class="{ selected: isNightReminderSelected }"
+                >
+                  Вечер
+                </button>
+                <input
+                  v-if="isNightReminderSelected"
+                  v-model="nightReminder"
+                  type="time"
+                  value="20:00"
+                  min="05:00"
+                  max="11:00"
+                  step="900"
+                  required
+                />
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="button-group">
-          <a href="chat.html" class="button chat-button">Чат</a>
+          <router-link to="/chat" class="button chat-button">Чат</router-link>
           <div class="chat-container">
             <p>
               Натиснете тук, за да се отправите към група, в която ще можете да
@@ -203,6 +249,12 @@ import { ref, reactive, inject, computed } from "vue";
 import { createWebHistory, useRouter } from "vue-router";
 
 const state = inject("state");
+
+if (!state || !state.userData) {
+  console.error("State or user data is not available!");
+  router.push("/login");
+}
+
 const firstName = state.userData.firstName;
 const lastName = state.userData.lastName;
 const email = state.userData.email;
@@ -225,6 +277,45 @@ const makeupText = ref("");
 const selectMakeup = (makeup) => {
   selectedMakeup.value = makeup;
 };
+
+const isMorningReminderSelected = ref(state.userData.morningReminder !== null);
+const isNightReminderSelected = ref(state.userData.nightReminder !== null);
+const morningReminder = ref(state.userData.morningReminder);
+const nightReminder = ref(state.userData.nightReminder);
+
+const selectDayReminder = () => {
+  isMorningReminderSelected.value = !isMorningReminderSelected.value;
+};
+
+const selectNightReminder = () => {
+  isNightReminderSelected.value = !isNightReminderSelected.value;
+}
+
+const setReminders = async () => {
+  //get reminders from frontend
+  const reminders = {
+    morningReminder: null,
+    nightReminder: null
+  };
+  if(isMorningReminderSelected) reminders.morningReminder = morningReminder.value;
+  if(isNightReminderSelected) reminders.nightReminder = nightReminder.value;
+
+  try {
+    const apiUrl = "http://localhost:3005/setReminders";
+    const userId = state.userData.id;
+    console.log(userId);
+    console.log(reminders);
+    const response = await axios.post(apiUrl, {userId, reminders} )
+    alert(response.data.message);
+
+  } catch (error) {
+    console.error(
+      "Error setting reminders:",
+      error.response?.data || error.message
+    );
+    alert(error.response?.data.error || error.message);
+  }  
+}
 
 const getRoutine = async () => {
   try {
@@ -284,16 +375,8 @@ body {
   line-height: 1.6;
 }
 
-body.index-page {
-  background-color: var(--background-color);
-  margin: 0;
-  color: var(--text-color);
-  line-height: 1.6;
-}
-
 main {
   display: block;
-  unicode-bidi: isolate;
   margin-top: 12rem;
 }
 
@@ -302,78 +385,18 @@ main {
   height: auto;
   display: block;
   margin: 0;
-  border-radius: 0px;
   box-shadow: var(--shadow);
 }
 
-.senki-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.main-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0.5rem; /* Reduce the padding to make the navbar smaller */
-  margin-top: -3rem;
-}
-
-.logo-container.hidden {
-  opacity: 0; /* Hide the logo */
-  transition: opacity 0.3s ease;
-}
-
-.logo-container {
-  text-align: center;
-  flex: 10;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo {
-  font-size: 0; /* Remove text logo */
-  margin: 0; /* Remove margin to center the logo */
-}
-
-.logo:hover {
-  color: #ffffff;
-}
-
-.logo-image {
-  max-width: 500px; /* Increase the size as needed */
-  height: auto;
-}
-
-.logo-subtext {
-  font-size: 24px; /* Increased font size */
-  font-weight: 400;
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.image-section {
-  position: relative;
-  width: 100%;
-  margin-top: 4rem; /* Добавете отстъп тук */
-}
-
 .new-container {
-  top: auto; /* Премахнете абсолютното позициониране */
-  left: auto;
-  transform: none;
-  position: relative; /* Променете на относително позициониране */
+  position: relative;
   background-color: rgb(255, 255, 255);
   padding: 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 80%;
   max-width: 1100px;
-  margin: 0 auto; /* Центрирайте контейнера */
+  margin: 0 auto;
   margin-top: -20rem;
 }
 
@@ -381,210 +404,118 @@ main {
   width: 1px;
   height: 35rem;
   background-color: #ccc;
-  margin: 0 20px; /* Adjust the margin to center the line */
   margin-left: 2rem;
 }
 
 .content {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center the content */
+  justify-content: center;
 }
 
 .text {
-  margin-right: 20px; /* Adjust the margin to balance the space */
-  font-size: 18px; /* Smaller font size */
+  margin-right: 20px;
+  font-size: 18px;
   color: #333;
-  text-align: left; /* Align text to the left */
-  flex: 1; /* Allow the text to take up available space */
+  text-align: left;
+  flex: 1;
 }
 
 .text h2 {
-  font-size: 18px; /* Smaller font size for h2 elements */
+  font-size: 18px;
 }
 
 .small-text {
-  font-size: 14px; /* Smaller font size for the additional text */
+  font-size: 14px;
   color: #333;
-  text-align: left; /* Align text to the left */
+  text-align: left;
   margin-top: 10px;
 }
 
 .user-info {
-  margin-left: 20px; /* Adjust the margin to balance the space */
+  margin-left: 20px;
   text-align: left;
-  flex: 1; /* Allow the user info to take up available space */
-  margin-top: 17rem; /* Move the user info up */
-}
-
-.user-info p {
-  margin: -2px 0;
+  flex: 1;
+  /* margin-top: 17rem; */
 }
 
 .user-detail {
-  margin-bottom: 15px; /* Increase the space between user details */
+  /* margin-bottom: 15px; */
   flex: 1;
 }
 
 .user-detail-row {
   display: flex;
   justify-content: space-between;
-  gap: 20px; /* Adjust the gap value as needed */
-}
-
-.user-detail p {
-  text-align: left; /* Align the text to the left */
+  gap: 20px;
 }
 
 .account-title {
-  font-size: 20px; /* Increase the font size */
+  font-size: 20px;
   font-weight: bold;
   text-align: left;
-  margin-bottom: 50px; /* Add more space between the title and the text */
-  margin-top: -24rem;
-}
-
-.button.edit-button {
-  background-color: #fff;
-  color: #333;
-  border: 2px solid #333;
-  border-radius: 25px;
-  padding: 5px 10px;
-  font-size: 14px;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}
-
-.button.edit-button:hover {
-  background-color: #333;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.skincare-button-container {
-  text-align: center;
-  margin-top: -1rem; /* Преместете бутона нагоре, като застъпва new-container */
-  margin-left: -50rem;
-  position: relative; /* Позволява преместване спрямо нормалния поток */
-  z-index: 10; /* Уверете се, че бутонът е над new-container */
-}
-
-.button.skincare-button {
-  background-color: #000000; /* Черен цвят за бутона */
-  color: white;
-  border: none;
-  padding: 10px 10px;
-  font-size: 16px;
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.button.skincare-button:hover {
-  background-color: #3a3a3a; /* По-тъмен цвят при задържане */
-  transform: translateY(-2px);
+  margin-bottom: 30px;
+  /* margin-top: -20rem; */
 }
 
 .button-container {
   display: flex;
-  flex-direction: column; /* Подредете бутоните и контейнерите вертикално */
-  align-items: center; /* Центрирайте бутоните и контейнерите хоризонтално */
-  gap: 2rem; /* Разстояние между групите бутони и контейнери */
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .button-group {
   display: flex;
-  flex-direction: column; /* Подредете бутона и контейнера вертикално */
-  align-items: center; /* Центрирайте съдържанието хоризонтално */
-  width: 100%; /* Уверете се, че групата заема цялата ширина */
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .button-group .button {
-  margin-bottom: 10px; /* Разстояние между бутона и контейнера */
+  margin-bottom: 10px;
+  text-decoration: none;
 }
 
-.button.skincare-button,
-.button.makeup-button,
-.button.reminder-button,
-.button.chat-button {
-  background-color: #000000; /* Черен цвят за бутоните */
+.button {
+  background-color: #000000;
   color: white;
   border: none;
   padding: 10px 20px;
   font-size: 16px;
   font-weight: 600;
   text-align: center;
-  text-decoration: none;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
-  width: 200px; /* Фиксирана ширина */
-  height: 50px; /* Фиксирана височина */
+  width: 200px;
+  height: 50px;
   display: flex;
-  align-items: center; /* Центрира текст вертикално */
-  justify-content: center; /* Центрира текст хоризонтално */
+  align-items: center;
+  justify-content: center;
   margin-top: 2rem;
 }
 
-.button.skincare-button:hover,
-.button.makeup-button:hover,
-.button.reminder-button:hover,
-.button.chat-button:hover {
-  background-color: #3a3a3a; /* По-тъмен цвят при задържане */
+.chat-button{
+  width: 160px;
+  height: 30px;
+}
+
+.button:hover {
+  background-color: #3a3a3a;
   transform: translateY(-2px);
 }
 
-/* Контейнер за грижа за кожата */
-.skincare-container {
-  background-color: #ffffff;
-  padding: 5rem;
-  margin-top: 10px; /* Добавете разстояние под бутона */
-  text-align: center;
-  position: relative;
-  width: 50%; /* Задайте ширина за контейнерите */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Контейнер за персонализиран грим */
-.makeup-container {
-  background-color: #ffffff;
-  padding: 5rem;
-  margin-top: 10px; /* Добавете разстояние под бутона */
-  border: 1px solid #ffffff;
-  text-align: center;
-  position: relative;
-  width: 50%; /* Задайте ширина за контейнерите */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Контейнер за напомняне */
-.reminder-container {
-  background-color: #ffffff;
-  padding: 5rem;
-  margin-top: 10px; /* Добавете разстояние под бутона */
-  border: 1px solid #ffffff;
-  text-align: center;
-  position: relative;
-  width: 50%; /* Задайте ширина за контейнерите */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Контейнер за чат */
+.skincare-container,
+.makeup-container,
+.reminder-container,
 .chat-container {
   background-color: #ffffff;
   padding: 5rem;
-  margin-top: 10px; /* Добавете разстояние под бутона */
-  border: 1px solid #ffffff;
+  margin-top: 10px;
   text-align: center;
   position: relative;
-  width: 50%; /* Задайте ширина за контейнерите */
+  width: 50%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -592,6 +523,18 @@ main {
   display: flex;
   gap: 10px;
   margin-top: 10px;
+}
+
+.reminder-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+}
+
+.reminder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .routine-button {
@@ -619,5 +562,11 @@ main {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
   border-radius: 5px;
+}
+
+#advice-container p {
+  font-size: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  line-height: 1.5;
 }
 </style>

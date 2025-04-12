@@ -63,6 +63,7 @@
 import { ref, onMounted, onBeforeUnmount, inject } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import { saveState } from "../state.js";
 
 // Reactive state
 const state = inject("state");
@@ -97,6 +98,7 @@ const handleLogin = async () => {
 
     state.userData = response.data.user;
     state.isLoggedIn = true;
+    saveState();
     console.log(state.userData);
     router.push("/dashboard");
   } catch (error) {

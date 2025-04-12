@@ -3,17 +3,36 @@
     <nav class="main-nav">
       <div class="logo-container">
         <router-link to="/" class="logo">
-          <img src="/imgs/logo.png" alt="Beauty Assistant Logo" class="logo-image" />
+          <img
+            src="/imgs/logo.png"
+            alt="Beauty Assistant Logo"
+            class="logo-image"
+          />
         </router-link>
       </div>
-      <div class="nav-links">
-        <template v-if="state.isLoggedIn">
-          <router-link to="/dashboard" class="button secondary-button">Профил</router-link>
-          <button @click="logout" class="button secondary-button">Изход</button>
-        </template>
-        <template v-else>
-          <router-link to="/login" class="button secondary-button">Вход</router-link>
-        </template>
+      <div v-if="state.isLoggedIn" class="nav-links">
+        <div>
+          <router-link to="/dashboard" class="button secondary-button"
+            >Профил</router-link
+          >
+        </div>
+        <div>
+          <router-link to="/chat" class="button secondary-button"
+          >Чат</router-link>
+        </div>
+        <div>
+          <router-link to="/" @click="logout" class="button secondary-button"
+            >Изход</router-link
+          >
+        </div>
+      </div>
+
+      <div v-else class="nav-links">
+        <div>
+          <router-link to="/login" class="button secondary-button"
+          >Вход</router-link
+        >
+        </div>
       </div>
     </nav>
   </header>
@@ -23,6 +42,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { inject } from "vue";
+import { saveState } from "../state";
 
 const state = inject("state");
 const router = useRouter();
@@ -30,8 +50,9 @@ const router = useRouter();
 // Logout function
 const logout = () => {
   console.log(state.isLoggedIn);
-  state.isLoggedIn = !state.isLoggedIn;
-  router.push("/login"); // Redirect to login page
+  state.isLoggedIn = false;
+  state.userData = null;
+  saveState();
 };
 </script>
 
@@ -61,7 +82,7 @@ header#header {
 }
 
 .logo {
-  display:inline-block;
+  display: inline-block;
   width: fit-content;
   height: fit-content;
   margin: 0 auto;
@@ -87,6 +108,10 @@ header#header {
 .nav-links .button.secondary-button {
   margin-top: 7rem;
   display: inline-block;
+  grid-area: 10px;
+}
+
+.nav-item {
 }
 
 .button {
@@ -121,5 +146,58 @@ header#header {
 .logo-image:hover {
   opacity: 70%;
   transition: opacity 0.3s ease-in-out;
+}
+
+/* TODO */
+@media (max-width: 1200px) {
+  .main-nav {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logo-image {
+    margin-top: 5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo-image {
+    width: 80%;
+  }
+
+  .button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .main-nav {
+    align-items: center;
+  }
+
+  .logo-image {
+    margin-top: 3rem;
+  }
+
+  .nav-links {
+    gap: 5px;
+  }
+
+  .button {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 }
 </style>
