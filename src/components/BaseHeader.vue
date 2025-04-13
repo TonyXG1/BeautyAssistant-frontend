@@ -11,16 +11,16 @@
         </router-link>
       </div>
       <div v-if="state.isLoggedIn" class="nav-links">
-        <div>
+        <div class="nav-item">
           <router-link to="/dashboard" class="button secondary-button"
             >Профил</router-link
           >
         </div>
-        <div>
+        <div class="nav-item">
           <router-link to="/chat" class="button secondary-button"
           >Чат</router-link>
         </div>
-        <div>
+        <div class="nav-item">
           <router-link to="/" @click="logout" class="button secondary-button"
             >Изход</router-link
           >
@@ -111,9 +111,6 @@ header#header {
   grid-area: 10px;
 }
 
-.nav-item {
-}
-
 .button {
   padding: 10px 20px;
   font-size: 16px;
@@ -126,6 +123,7 @@ header#header {
   border-radius: 25px;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 60px;
 }
 
 .button:hover {

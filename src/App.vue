@@ -12,11 +12,11 @@ import BaseHeader from "./components/BaseHeader.vue";
 import { RouterView } from "vue-router";
 import { provide, reactive } from "vue";
 import { state } from "./state.js";
-// const state = reactive({
-//   isLoggedIn: false,
-//   userData: null
-// });
+import { useNotifications } from "./composables/useNotifications.js";
+
 provide("state", state);
+
+useNotifications();
 </script>
 
 <style scoped></style>

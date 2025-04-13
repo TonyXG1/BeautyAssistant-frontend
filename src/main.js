@@ -2,6 +2,8 @@ import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import Toast from 'vue-toastification'
+import 'vue-toastification/dist/index.css';
 import Dashboard from './components/Dashboard.vue';
 import LoginPage from './components/LoginPage.vue';
 import RegisterPage from './components/RegisterPage.vue';
@@ -33,4 +35,9 @@ const routes = [
 
 const app = createApp(App);
 app.use(router);
+app.use(Toast, {
+  transition: 'Vue-Toastification__bounce',
+  maxToasts: 20,
+  newestOnTop: true,
+})
 app.mount('#app')

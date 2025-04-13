@@ -7,7 +7,7 @@
       <div class="new-container">
         <h1 class="chat-title">Чат</h1>
         <div class="chat-area">
-          <!-- Chat messages will go here -->
+          <!-- Chat messages -->
           <div
             v-for="(message, index) in messages"
             :key="index"
@@ -49,14 +49,12 @@ const username = state.userData.firstName;
 const sendMessage = () => {
   if (message.value.trim() !== "") {
     const data = { username: username, text: message.value };
-    socket.emit("sendMessage", data); // Send message to the server
-    message.value = ""; // Clear input field
+    socket.emit("sendMessage", data);
+    message.value = "";
   }
 };
 
 onMounted(() => {
-  // Listen for incoming messages
-
   socket.emit("registerUser", username);
 
   socket.on("previousMessages", (prevMessages) => {
@@ -83,7 +81,7 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  socket.disconnect(); // Disconnect when the component is destroyed
+  socket.disconnect();
 });
 </script>
 

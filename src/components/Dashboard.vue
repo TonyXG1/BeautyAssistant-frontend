@@ -180,7 +180,9 @@
         </div>
 
         <div class="button-group">
-          <button class="button reminder-button" @click="setReminders">Напомняне</button>
+          <button class="button reminder-button" @click="setReminders">
+            Напомняне
+          </button>
           <div class="reminder-container">
             <p>
               Тук може да получавате имейл като известие, за да не пропускате
@@ -245,7 +247,7 @@
 
 <script setup>
 import axios from "axios";
-import { ref, reactive, inject, computed } from "vue";
+import { ref, reactive, inject, computed, onMounted } from "vue";
 import { createWebHistory, useRouter } from "vue-router";
 
 const state = inject("state");
@@ -289,33 +291,54 @@ const selectDayReminder = () => {
 
 const selectNightReminder = () => {
   isNightReminderSelected.value = !isNightReminderSelected.value;
-}
+};
+
+const fetchReminders = async () => {
+  try {
+    const apiUrl = "http://localhost:3005/reminders";
+    const userId = state.userData.id;
+    const response = await axios.get(apiUrl, {
+      params: { userId },
+    });
+    morningReminder.value = response.data.morningReminder;
+    nightReminder.value = response.data.nightReminder;
+    isMorningReminderSelected.value = response.data.morningReminder == null ? false : true;
+    isNightReminderSelected.value = response.data.nightReminder == null ? false : true;
+  } catch (error) {
+    console.error(
+      "Error fetching reminders:",
+      error.response?.data || error.message
+    );
+    alert(error.response?.data.error || error.message);
+  }
+};
 
 const setReminders = async () => {
   //get reminders from frontend
   const reminders = {
     morningReminder: null,
-    nightReminder: null
+    nightReminder: null,
   };
-  if(isMorningReminderSelected) reminders.morningReminder = morningReminder.value;
-  if(isNightReminderSelected) reminders.nightReminder = nightReminder.value;
+  if (isMorningReminderSelected.value)
+    reminders.morningReminder = morningReminder.value;
+  if (isNightReminderSelected.value)
+    reminders.nightReminder = nightReminder.value;
 
   try {
     const apiUrl = "http://localhost:3005/setReminders";
     const userId = state.userData.id;
     console.log(userId);
     console.log(reminders);
-    const response = await axios.post(apiUrl, {userId, reminders} )
+    const response = await axios.post(apiUrl, { userId, reminders });
     alert(response.data.message);
-
   } catch (error) {
     console.error(
       "Error setting reminders:",
       error.response?.data || error.message
     );
     alert(error.response?.data.error || error.message);
-  }  
-}
+  }
+};
 
 const getRoutine = async () => {
   try {
@@ -363,6 +386,10 @@ const formattedRoutineText = computed(() => {
 
 const formattedMakeupText = computed(() => {
   return makeupText.value.replace(/\n/g, "<br>");
+});
+
+onMounted(() => {
+  fetchReminders();
 });
 </script>
 
@@ -482,8 +509,9 @@ main {
   background-color: #000000;
   color: white;
   border: none;
+  border-radius: 8px;
   padding: 10px 20px;
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
@@ -496,7 +524,7 @@ main {
   margin-top: 2rem;
 }
 
-.chat-button{
+.chat-button {
   width: 160px;
   height: 30px;
 }

@@ -123,6 +123,11 @@
               <option value="black">Черна</option>
             </select>
           </div>
+          <p class="small-text">
+            С тази регистрация си вие се съгласявате с нашите Условия за ползване и
+            нашата
+            <router-link to="/privacy">Политика за поверителност</router-link>.
+          </p>
           <div class="form-group button-container">
             <button type="submit" class="button primary-button">
               Регистрация
@@ -133,6 +138,19 @@
             <router-link to="/login" class="link">Вход</router-link>
           </p>
         </form>
+        <p class="small-text">
+          С изпращането на този формуляр се съгласявам с Условията за ползване
+          на Beauty Assistant (които включват разпоредба за арбитраж) и прочетох
+          и потвърждавам Политиката за поверителност на Beauty Assistant. Beauty
+          Assistant ще използва личната информация за вас, включително вашите
+          коментари в този формуляр, за да ви предоставим персонализирани онлайн
+          и офлайн взаимодействия, за подобряване на нашите продукти и услуги,
+          за анализи и други цели, изброени в Политиката за поверителност на
+          Beauty Assistant. Beauty Assistant също ще използва лична информация
+          за вас, за да се свърже с вас, за да отговори на вашата заявка, в
+          случай че желаете да се свърже с вас от екипа за обслужване на клиенти
+          на Beauty Assistant.
+        </p>
       </div>
     </main>
   </div>
@@ -175,7 +193,7 @@ const handleRegister = async () => {
       error.response?.data || error.message
     );
     alert(error.response?.data.error || error.message);
-  };
+  }
 };
 </script>
 
@@ -210,7 +228,6 @@ main {
   position: relative; /* Ensure main is a positioning context */
   margin-top: 20px;
   margin-bottom: 20px;
-  padding: -20rem;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -228,9 +245,9 @@ main {
   position: absolute; /* Position over the image */
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -75%);
   overflow-y: auto;
-  max-height: 90vh;
+  max-height: 600px;
   z-index: 1; /* Ensure it’s above the image */
 }
 
@@ -339,6 +356,13 @@ main {
 
 .form-footer a:hover {
   color: #000000;
+}
+
+.small-text {
+  font-size: 12px;
+  color: #666;
+  margin-top: 0.5rem;
+  text-align: center;
 }
 
 @media (max-width: 768px) {

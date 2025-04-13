@@ -162,11 +162,12 @@ main {
   width: 100%;
   padding: 20px;
   background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 0px;
   position: absolute;
   top: 60%;
   left: 50%;
-  transform: translate(-50%, -20%);
+  transform: translate(-50%, -50%);
 }
 
 .login-container h2 {
@@ -227,11 +228,10 @@ main {
   width: 100%;
   padding: 40px;
   background-color: #ffffff;
-  border-radius: 0px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
   position: absolute;
-  top: 73%;
-  left: 70%;
+  top: 60%;
+  left: 69%;
   transform: translate(-50%, -50%);
   text-align: center;
 }
