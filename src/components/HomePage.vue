@@ -24,7 +24,7 @@
           отговорите на всички ваши въпроси за красотата - винаги, когато имате
           нужда от тях, където и да сте.
         </p>
-        <img src="/imgs/primer.jpg" alt="Blur Image" class="small-image" />
+        <img src="/imgs/primer2.jpg" alt="Blur Image" class="small-image" />
         <h3 class="large-text">
           ПЕРСОНАЛИЗИРАН СЪВЕТ ЗА ГРИМ И ГРИЖА ЗА КОЖАТА СПОРЕД ВСЯКА ВАША
           ОСОБЕНОСТ
@@ -108,14 +108,7 @@
         </div>
       </section>
     </main>
-    <footer class="footer-nav">
-      <div class="footer-container">
-        <router-link to="/">Начало</router-link>
-        <router-link to="/about">За нас</router-link>
-        <router-link to="/contact">Контакти</router-link>
-        <router-link to="/privacy">Поверителност</router-link>
-      </div>
-    </footer>
+
   </div>
 </template>
 
@@ -488,8 +481,8 @@ main {
   border: none;
   text-align: left;
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: 400;
+  font-size: 1.2rem;
+  font-weight: 500;
   transition: color 0.3s ease;
   display: flex;
   justify-content: space-between;
@@ -514,40 +507,4 @@ main {
   font-weight: 300;
 }
 
-.full-width-image-section {
-  width: 100%;
-  position: relative;
-}
-
-.worth-it-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.footer-nav {
-  background-color: #000;
-  color: #fff;
-  padding: 1rem 0;
-  text-align: center;
-  position: relative;
-  width: 100%;
-}
-
-.footer-container {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-}
-
-.footer-container a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.footer-container a:hover {
-  color: #9c9999;
-}
 </style>

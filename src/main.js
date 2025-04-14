@@ -10,13 +10,19 @@ import RegisterPage from './components/RegisterPage.vue';
 import HomePage from './components/HomePage.vue';
 import { state } from './state.js';
 import ChatPage from './components/ChatPage.vue';
+import AboutPage from './components/AboutPage.vue'
+import ContactPage from './components/ContactPage.vue'
+import PrivacyPage from './components/PrivacyPage.vue'
 
 const routes = [
     { path: "/", component: HomePage},
     { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
     { path: "/login", component: LoginPage },
     { path: "/register", component: RegisterPage },
-    { path: "/chat", component: ChatPage, meta: { requiresAuth: true } }
+    { path: "/chat", component: ChatPage, meta: { requiresAuth: true, hideFooter: true } },
+    { path: "/about", component: AboutPage  },
+    { path: "/contact", component: ContactPage  },
+    { path: "/privacy", component: PrivacyPage  }
   ];
   
   const router = createRouter({
