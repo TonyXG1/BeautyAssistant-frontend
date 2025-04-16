@@ -12,9 +12,10 @@
 import BaseHeader from "./components/BaseHeader.vue";
 import BaseFooter from "./components/BaseFooter.vue";
 import { RouterView } from "vue-router";
-import { provide, reactive } from "vue";
-import { state } from "./state.js";
 import { useNotifications } from "./composables/useNotifications.js";
+
+import { provide } from "vue";
+import { state } from "./state.js";
 
 provide("state", state);
 

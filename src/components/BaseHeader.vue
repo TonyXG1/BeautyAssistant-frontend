@@ -45,6 +45,7 @@ import { inject } from "vue";
 import { saveState } from "../state";
 
 const state = inject("state");
+  
 const router = useRouter();
 
 // Logout function

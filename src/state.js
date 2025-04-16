@@ -1,8 +1,8 @@
 import { reactive } from "vue";
 
 export const state = reactive({
-  isLoggedIn: localStorage.getItem("isLoggedIn") === "true", // Example state
-  userData: JSON.parse(localStorage.getItem("userData")) || null,    // Add your user data here
+  isLoggedIn: localStorage.getItem("isLoggedIn") === "true",
+  userData: JSON.parse(localStorage.getItem("userData")) || null,
 });
 
 export const saveState = () => {
