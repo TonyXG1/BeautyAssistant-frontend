@@ -17,8 +17,8 @@ import PrivacyPage from './components/PrivacyPage.vue'
 const routes = [
     { path: "/", component: HomePage},
     { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true } },
-    { path: "/login", component: LoginPage },
-    { path: "/register", component: RegisterPage },
+    { path: "/login", component: LoginPage, meta: { hideFooter: true } },
+    { path: "/register", component: RegisterPage, meta: { hideFooter: true } },
     { path: "/chat", component: ChatPage, meta: { requiresAuth: true, hideFooter: true } },
     { path: "/about", component: AboutPage  },
     { path: "/contact", component: ContactPage  },
